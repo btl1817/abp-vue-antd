@@ -11,7 +11,7 @@ const AppConsts = {
   appBaseUrlFormat: '',
   remoteServiceBaseUrlFormat: '',
   appBaseUrl: 'http://localhost:8000',
-  remoteServiceBaseUrl: 'http://localhost:50538',
+  remoteServiceBaseUrl: 'http://localhost:58818',
   localeMappings: [
 
   ],

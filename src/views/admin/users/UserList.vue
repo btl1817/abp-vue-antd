@@ -64,10 +64,7 @@
           <a-icon type="down"/>
         </a-button>
       </a-dropdown>
-      <span
-        class="table-page-search-submitButtons"
-        :style="{ float: 'right', overflow: 'hidden' } "
-      >
+      <span class="table-page-search-submitButtons" :style="{ float: 'right', overflow: 'hidden' } " >
         <a-button @click="reset">重置</a-button>
         <a @click="toggleAdvanced" style="margin-left: 8px">
           {{ advanced ? '收起' : '展开' }}
@@ -88,22 +85,6 @@
       <span slot="roleName" slot-scope="values">
         <a-tag v-for="tag in values" color="blue" :key="tag.roleId">{{ tag.roleName }}</a-tag>
       </span>
-      <span slot="organizationUnitName" slot-scope="text,record">
-        <a-tooltip>
-          <template slot="title" v-if="record.organizationUnits.length>0">
-            <p>所属组织机构：</p>
-            <p
-              v-for="tag in record.organizationUnits"
-              :key="tag.organizationUnitId"
-            >{{ tag.organizationUnitName }}</p>
-          </template>
-          <a-badge
-            :count="record.organizationUnits.length"
-            :offset="[10]"
-            :numberStyle="{backgroundColor: '#fff', color: '#999', boxShadow: '0 0 0 1px #d9d9d9 inset'}"
-          >{{ text }}</a-badge>
-        </a-tooltip>
-      </span>
       <span slot="isActive" slot-scope="isActive">
         <a-tag color="blue" v-if="isActive">是</a-tag>
         <a-tag color="red" v-else>否</a-tag>
@@ -116,9 +97,6 @@
               <a-icon type="down"/>
             </a>
             <a-menu slot="overlay">
-              <a-menu-item v-if="record.id !== currentUser.id">
-                <a href="javascript:;">使用这个用户登录</a>
-              </a-menu-item>
               <a-menu-item>
                 <a href="javascript:;" @click="$refs.createOfEditModal.createOrEdit(record.id)">修改</a>
               </a-menu-item>
@@ -174,8 +152,7 @@ export default {
       columns: [
         {
           title: '用户名',
-          dataIndex: 'userName',
-          scopedSlots: { customRender: 'organizationUnitName' }
+          dataIndex: 'userName'
         },
         {
           title: '姓名',

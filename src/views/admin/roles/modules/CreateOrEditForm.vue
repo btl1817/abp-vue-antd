@@ -33,7 +33,14 @@
           </a-row>
         </div>
         <div v-show="currentStep === 1">
-          <a-tree checkable :treeData="treeData" v-model="selectedPermissions"></a-tree>
+          <a-tree 
+            checkable 
+            :treeData="treeData" 
+            v-model="selectedPermissions"
+            @check="onCheck" 
+            :checkedKeys="checkedKeys" 
+            :info="treeData">
+          </a-tree>
         </div>
       </a-form>
     </a-spin>
@@ -69,6 +76,7 @@ export default {
       roleId: undefined,
       treeData: [],
       selectedPermissions: [],
+      sendSelected: [],
       visible: false,
       confirmLoading: false,
       currentStep: 0,
@@ -83,6 +91,7 @@ export default {
       this.confirmLoading = true
       this.treeData = []
       this.selectedPermissions = []
+      this.sendSelected = []
       getRoleForEdit({ id: id })
         .then(response => {
           const result = response.result
@@ -109,7 +118,8 @@ export default {
               this.selectedPermissions.push(item.key)
             }
           })
-
+          alert(this.selectedPermissions)
+          this.sendSelected = this.selectedPermissions.slice(0)
           this.confirmLoading = false
         })
         .catch(err => {
@@ -133,13 +143,14 @@ export default {
       }
       this.confirmLoading = true
       validateFields((errors, values) => {
+        alert(this.sendSelected)
         if (!errors) {
           var formData = {
             role: {
               id: this.roleId,
               ...values
             },
-            grantedPermissionNames: this.selectedPermissions
+            grantedPermissionNames: this.sendSelected
           }
           createOrUpdateRole(formData)
             .then(response => {
@@ -157,6 +168,11 @@ export default {
           this.currentStep = 0
         }
       })
+    },
+    
+
+    onCheck(checkedKeys, info) {
+        this.sendSelected = checkedKeys.concat(info.halfCheckedKeys)
     },
     // 上一步
     backward() {

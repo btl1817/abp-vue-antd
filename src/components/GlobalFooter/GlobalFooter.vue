@@ -3,10 +3,8 @@
     <div class="copyright">
       Copyright
       <a-icon type="copyright"/>
-      {{ application.releaseDate }}
       <span>
-        <a href="https://github.com/zhang8043" target="_blank">Memory</a>
-        V.{{ application.version }}
+        <a href="" target="_blank"> 慧缘达智能科技</a>
       </span>
     </div>
   </div>

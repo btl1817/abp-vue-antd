@@ -6,7 +6,14 @@
       <a-button key="submit" type="primary" @click="handleSubmit">保存</a-button>
     </template>
     <a-spin :spinning="confirmLoading">
-      <a-tree checkable :treeData="treeData" v-model="selectedPermissions"></a-tree>
+      <a-tree 
+        checkable 
+        :treeData="treeData" 
+        v-model="selectedPermissions" 
+        @check="onCheck" 
+        :checkedKeys="checkedKeys" 
+        :info="treeData">
+      </a-tree>
     </a-spin>
   </a-modal>
 </template>
@@ -23,7 +30,8 @@ export default {
       visible: false,
       confirmLoading: false,
       treeData: [],
-      selectedPermissions: []
+      selectedPermissions: [],
+      sendselected: []
     }
   },
   methods: {
@@ -36,6 +44,7 @@ export default {
     getUserPermissions() {
       this.treeData = []
       this.selectedPermissions = []
+      this.sendselected = []
       getUserPermissionsForEdit({ id: this.userId })
         .then(response => {
           const result = response.result
@@ -58,7 +67,7 @@ export default {
               this.selectedPermissions.push(item.key)
             }
           })
-
+          this.sendselected = this.selectedPermissions.slice(0)
           this.confirmLoading = false
         })
         .catch(err => {
@@ -78,9 +87,24 @@ export default {
           this.$message.error(err.message)
         })
     },
+
+    onCheck(checkedKeys, info) {
+        // let checkedKeysResult = [...checkedKeys, ...info.halfCheckedKeys]
+
+        // alert(info.halfCheckedKeys)
+        // alert(checkedKeys)
+        // alert(checkedKeys.concat(info.halfCheckedKeys))
+        this.sendselected = checkedKeys.concat(info.halfCheckedKeys)
+        // alert(this.sendselected)
+        // this.setState({ 
+        //      sendselected,
+        //  })
+    },
+
     handleSubmit() {
       this.confirmLoading = true
-      updateUserPermissions({ id: this.userId, grantedPermissionNames: this.selectedPermissions })
+      // alert(this.sendselected)
+      updateUserPermissions({ id: this.userId, grantedPermissionNames: this.sendselected })
         .then(response => {
           this.visible = false
           this.confirmLoading = false

@@ -27,6 +27,81 @@ export const asyncRouterMap = [
           },
         ]
       },
+      
+      // basedata
+      {
+        path: '/basedata',
+        name: 'basedata',
+        // redirect: '/basedata/workplace',
+        component: RouteView,
+        meta: { title: '基础数据', icon: 'setting' },
+        children: [
+          {
+            path: '/basedata/materials',
+            name: 'materials',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '物料信息', icon: 'profile', permission: 'Pages' }
+          },
+          {
+            path: '/basedata/turnoverbox',
+            name: 'turnoverbox',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '周转容器', icon: 'profile', permission: 'Pages' }
+          },
+          {
+            path: '/basedata/warehouse',
+            name: 'warehouse',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '仓库信息', icon: 'profile', permission: 'Pages' }
+          },
+          {
+            path: '/basedata/warehousearea',
+            name: 'warehousearea',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '库区信息', icon: 'profile', permission: 'Pages' }
+          },
+          {
+            path: '/basedata/storagelocation',
+            name: 'storagelocation',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '库位信息', icon: 'profile', permission: 'Pages' }
+          },
+        ]
+      },
+      
+      // dashboard
+      {
+        path: '/stockmanage',
+        name: 'stockmanage',
+        component: RouteView,
+        meta: { title: '仓库管理', icon: bxAnaalyse , permission: 'Pages.StockManager'},
+        children: [
+          {
+            path: '/dashboard/stockin',
+            name: 'stockin',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '原料入库', keepAlive: true, permission: 'Pages.StockManager' }
+          },
+          {
+            path: '/dashboard/stockout',
+            name: 'stockout',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '原料出库', keepAlive: true, permission: 'Pages.StockManager' }
+          },
+          {
+            path: '/dashboard/stockquery',
+            name: 'stockquery',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '库存查询', keepAlive: true, permission: 'Pages.StockManager' }
+          },
+          {
+            path: '/dashboard/stocklog',
+            name: 'stocklog',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '库存记录', keepAlive: true, permission: 'Pages.StockManager' }
+          },
+        ]
+      },
       // Exception
       {
         path: '/exception',
@@ -141,12 +216,12 @@ export const asyncRouterMap = [
         redirect: '/admin',
         meta: { title: '系统管理', icon: 'setting', permission: 'Pages' },
         children: [
-          {
-            path: '/admin/organization',
-            name: 'organization',
-            component: () => import('@/views/admin/organization/OrganizationList'),
-            meta: { title: '组织机构管理', hideHeader: true, permission: 'Pages' },
-          },
+          // {
+          //   path: '/admin/organization',
+          //   name: 'organization',
+          //   component: () => import('@/views/admin/organization/OrganizationList'),
+          //   meta: { title: '组织机构管理', hideHeader: true, permission: 'Pages' },
+          // },
           {
             path: '/admin/role',
             name: 'role',
@@ -160,31 +235,6 @@ export const asyncRouterMap = [
             meta: { title: '用户管理', hideHeader: true, permission: 'Pages' },
           },
           // {
-          //   path: '/admin/language',
-          //   name: 'language',
-          //   component: () => import('@/views/admin/languages/LanguagesList'),
-          //   meta: { title: '语言列表', hideHeader: true, permission: 'Pages' },
-          // },
-          // {
-          //   path: '/admin/languagetext/:key',
-          //   name: 'languagetext',
-          //   hidden: true,
-          //   component: () => import('@/views/admin/languages/LanguagesTextList'),
-          //   meta: { title: '语言文本', hidden: true, hideHeader: true, permission: 'Pages' },
-          // },
-          // {
-          //   path: '/admin/auditlog',
-          //   name: 'auditlog',
-          //   component: () => import('@/views/admin/auditlogs/AuditlogList'),
-          //   meta: { title: '审计日志', hideHeader: true, permission: 'Pages' },
-          // },
-          // {
-          //   path: '/admin/subscription',
-          //   name: 'subscription',
-          //   component: () => import('@/views/admin/subscription/Subscription'),
-          //   meta: { title: '订阅', hideHeader: true, permission: 'Pages' },
-          // },
-          // {
           //   path: '/admin/ui-customization',
           //   name: 'ui-customization',
           //   component: () => import('@/views/admin/ui-customization/UiCustomization'),
@@ -197,6 +247,12 @@ export const asyncRouterMap = [
           //   meta: { title: '设置', hideHeader: true, permission: 'Pages' },
           // },
         ]
+      },
+      {
+        path: '/admin/user',
+        name: 'user',
+        component: () => import('@/views/admin/users/UserList'),
+        meta: { title: '用户管理', hideHeader: true, permission: 'Pages' },
       },
     ]
   },

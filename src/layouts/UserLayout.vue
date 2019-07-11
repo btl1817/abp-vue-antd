@@ -5,23 +5,24 @@
         <div class="header">
           <a href="/">
             <img src="~@/assets/logo.svg" class="logo" alt="logo">
-            <span class="title">abp-vue-antd</span>
+            <span class="title">常州绍鼎密封科技有限公司</span>
           </a>
         </div>
-        <div class="desc">一个基于 ABP + Vue + Ant Design Pro Vue 的快速开发框架</div>
+        <div class="desc">炼胶中心智能管理系统</div>
+        <div class="split"/>
       </div>
 
       <route-view></route-view>
 
       <div class="footer">
-        <div class="links">
-          <a href="_self">帮助</a>
-          <a href="_self">隐私</a>
-          <a href="_self">条款</a>
+        
+        <div class="com">
+          <span class="title">无锡市慧缘达智能工业科技有限公司</span>
         </div>
+        <div class="split"/>
         <div class="copyright">
-          Copyright &copy; {{ application.releaseDate }}
-          <a href="https://github.com/zhang8043" target="_blank">Memory</a>
+          Copyright &copy; 
+          <a href="" target="_blank"> 慧缘达智能科技</a>
           V.{{ application.version }}
         </div>
       </div>
@@ -88,8 +89,13 @@ export default {
       text-decoration: none;
     }
 
+    
     .top {
       text-align: center;
+
+      .split {
+        height: 50px;
+        }
 
       .header {
         height: 44px;
@@ -113,7 +119,7 @@ export default {
         }
 
         .title {
-          font-size: 33px;
+          font-size: 30px;
           color: rgba(0, 0, 0, 0.85);
           font-family: Avenir, 'Helvetica Neue', Arial, Helvetica, sans-serif;
           font-weight: 600;
@@ -122,8 +128,9 @@ export default {
         }
       }
       .desc {
-        font-size: 14px;
-        color: rgba(0, 0, 0, 0.45);
+        font-size: 24px;
+        color: rgba(0, 0, 0, 0.75);
+        font-weight: 600;
         margin-top: 12px;
         margin-bottom: 40px;
       }
@@ -154,6 +161,17 @@ export default {
           }
         }
       }
+      .com {
+        font-size: 18px;
+        color: rgba(0, 0, 0, 0.85);
+        font-family: Avenir, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        font-weight: 600;
+        position: relative;
+        top: 2px;
+      }
+      .split {
+        height: 20px;
+        }
       .copyright {
         color: rgba(0, 0, 0, 0.45);
         font-size: 14px;

@@ -14,7 +14,7 @@ import { axios } from '@/utils/request'
  */
 export function login (parameter) {
   return axios({
-    url: 'http://127.0.0.1:50538/api/TokenAuth/Authenticate',
+    url: 'http://127.0.0.1:58818/api/TokenAuth/Authenticate',
     method: 'post',
     data: parameter
   })
