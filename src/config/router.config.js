@@ -28,6 +28,40 @@ export const asyncRouterMap = [
         ]
       },
       
+      // 工艺管理
+      {
+        path: '/technology',
+        name: 'technology',
+        redirect: '/technology/technologyinfo',
+        component: RouteView,
+        meta: { title: '工艺管理', icon: 'setting' },
+        children: [
+          {
+            path: '/technology/technologyinfo',
+            name: 'technologyinfo',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '工艺管理', icon: 'profile', permission: 'Pages' }
+          },
+        ]
+      },
+      
+      // 生产计划
+      {
+        path: '/plan',
+        name: 'plan',
+        redirect: '/plan/technologyinfo',
+        component: RouteView,
+        meta: { title: '工艺管理', icon: 'setting' },
+        children: [
+          {
+            path: '/plan/technologyinfo',
+            name: 'plan',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '工艺管理', icon: 'profile', permission: 'Pages' }
+          },
+        ]
+      },
+
       // basedata
       {
         path: '/basedata',
