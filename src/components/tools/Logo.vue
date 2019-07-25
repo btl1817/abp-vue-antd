@@ -18,7 +18,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: 'abp-vue-antd',
+      default: '炼胶智能管理',
       required: false
     },
     showTitle: {

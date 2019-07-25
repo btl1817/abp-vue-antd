@@ -49,19 +49,91 @@ export const asyncRouterMap = [
       {
         path: '/plan',
         name: 'plan',
-        redirect: '/plan/technologyinfo',
+        redirect: '/plan/planmanage',
         component: RouteView,
-        meta: { title: '工艺管理', icon: 'setting' },
+        meta: { title: '生产计划', icon: 'setting' },
         children: [
           {
-            path: '/plan/technologyinfo',
-            name: 'plan',
+            path: '/plan/planmanage',
+            name: 'planmanage',
             component: () => import('@/views/exception/404'),
-            meta: { title: '工艺管理', icon: 'profile', permission: 'Pages' }
+            meta: { title: '生产计划', icon: 'profile', permission: 'Pages' }
+          },
+          {
+            path: '/plan/devicecheck',
+            name: 'devicecheck',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '设备点检', icon: 'profile', permission: 'Pages' }
           },
         ]
       },
 
+      // dashboard
+      {
+        path: '/Rack',
+        name: 'Rack',
+        component: RouteView,
+        meta: { title: '料架管理', icon: bxAnaalyse , permission: 'Pages.Rackmanage'},
+        children: [
+          {
+            path: '/Rack/rackmanage',
+            name: 'rackmanage',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '料架管理', keepAlive: true, permission: 'Pages.Rackmanage' }
+          },
+          {
+            path: '/Rack/racklog',
+            name: 'racklog',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '料架补料记录', keepAlive: true, permission: 'Pages.Rackmanage' }
+          },
+          {
+            path: '/Rack/linestockmanage',
+            name: 'linestockmanage',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '线边库管理', keepAlive: true, permission: 'Pages.Rackmanage' }
+          },
+          {
+            path: '/Rack/linestocklog',
+            name: 'sinestocklog',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '线边库历史台账', keepAlive: true, permission: 'Pages.Rackmanage' }
+          },
+        ]
+      },
+      // dashboard
+      {
+        path: '/stockmanage',
+        name: 'stockmanage',
+        component: RouteView,
+        meta: { title: '仓库管理', icon: bxAnaalyse , permission: 'Pages.StockManager'},
+        children: [
+          {
+            path: '/dashboard/stockin',
+            name: 'stockin',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '原料入库', keepAlive: true, permission: 'Pages.StockManager' }
+          },
+          {
+            path: '/dashboard/stockout',
+            name: 'stockout',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '原料出库', keepAlive: true, permission: 'Pages.StockManager' }
+          },
+          {
+            path: '/dashboard/stockquery',
+            name: 'stockquery',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '库存查询', keepAlive: true, permission: 'Pages.StockManager' }
+          },
+          {
+            path: '/dashboard/stocklog',
+            name: 'stocklog',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '库存记录', keepAlive: true, permission: 'Pages.StockManager' }
+          },
+        ]
+      },
       // basedata
       {
         path: '/basedata',
@@ -100,42 +172,15 @@ export const asyncRouterMap = [
             component: () => import('@/views/exception/404'),
             meta: { title: '库位信息', icon: 'profile', permission: 'Pages' }
           },
+          {
+            path: '/basedata/systemconfig',
+            name: 'systemconfig',
+            component: () => import('@/views/exception/404'),
+            meta: { title: '系统配置', icon: 'profile', permission: 'Pages' }
+          },
         ]
       },
       
-      // dashboard
-      {
-        path: '/stockmanage',
-        name: 'stockmanage',
-        component: RouteView,
-        meta: { title: '仓库管理', icon: bxAnaalyse , permission: 'Pages.StockManager'},
-        children: [
-          {
-            path: '/dashboard/stockin',
-            name: 'stockin',
-            component: () => import('@/views/exception/404'),
-            meta: { title: '原料入库', keepAlive: true, permission: 'Pages.StockManager' }
-          },
-          {
-            path: '/dashboard/stockout',
-            name: 'stockout',
-            component: () => import('@/views/exception/404'),
-            meta: { title: '原料出库', keepAlive: true, permission: 'Pages.StockManager' }
-          },
-          {
-            path: '/dashboard/stockquery',
-            name: 'stockquery',
-            component: () => import('@/views/exception/404'),
-            meta: { title: '库存查询', keepAlive: true, permission: 'Pages.StockManager' }
-          },
-          {
-            path: '/dashboard/stocklog',
-            name: 'stocklog',
-            component: () => import('@/views/exception/404'),
-            meta: { title: '库存记录', keepAlive: true, permission: 'Pages.StockManager' }
-          },
-        ]
-      },
       // Exception
       {
         path: '/exception',
@@ -281,12 +326,6 @@ export const asyncRouterMap = [
           //   meta: { title: '设置', hideHeader: true, permission: 'Pages' },
           // },
         ]
-      },
-      {
-        path: '/admin/user',
-        name: 'user',
-        component: () => import('@/views/admin/users/UserList'),
-        meta: { title: '用户管理', hideHeader: true, permission: 'Pages' },
       },
     ]
   },

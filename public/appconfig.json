@@ -1,5 +1,5 @@
 {
-  "remoteServiceBaseUrl": "http://localhost:21021",
+  "remoteServiceBaseUrl": "http://hyd-yf01:21021",
   "appBaseUrl": "http://localhost:8000",
   "localeMappings": {
     "angular": [

@@ -16,4 +16,4 @@ export const setDocumentTitle = function (title) {
   }
 }
 
-export const domTitle = 'abp-vue-antd'
+export const domTitle = '炼胶中心智能管理系统'

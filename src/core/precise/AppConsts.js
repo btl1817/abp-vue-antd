@@ -10,8 +10,8 @@ const AppConsts = {
   },
   appBaseUrlFormat: '',
   remoteServiceBaseUrlFormat: '',
-  appBaseUrl: 'http://localhost:8000',
-  remoteServiceBaseUrl: 'http://localhost:21021',
+  appBaseUrl: 'http://localhost:8080',
+  remoteServiceBaseUrl: 'http://hyd-yf01:21021',
   localeMappings: [
 
   ],

@@ -6,18 +6,15 @@
         {{ timeFix }}，{{ user.name+user.surname }}
         <span class="welcome-text">，{{ welcome() }}</span>
       </div>
-      <div>前端工程师 | 蚂蚁金服 - 某某某事业群 - VUE平台</div>
+      <div>用户看板</div>
     </div>
     <div slot="extra">
       <a-row class="more-info">
         <a-col :span="8">
-          <head-info title="项目数" content="56" :center="false" :bordered="false"/>
+          <head-info title="待处理" content="1" :center="false" :bordered="false"/>
         </a-col>
         <a-col :span="8">
-          <head-info title="团队排名" content="8/24" :center="false" :bordered="false"/>
-        </a-col>
-        <a-col :span="8">
-          <head-info title="项目访问" content="2,223" :center="false"/>
+          <head-info title="未读消息" content="0" :center="false" :bordered="false"/>
         </a-col>
       </a-row>
     </div>
@@ -33,7 +30,6 @@
             title="进行中的项目"
             :body-style="{ padding: 0 }"
           >
-            <a slot="extra">全部项目</a>
             <div>
               <a-card-grid class="project-card-grid" :key="i" v-for="(item, i) in projects">
                 <a-card :bordered="false" :body-style="{ padding: 0 }">
@@ -45,8 +41,8 @@
                     <div slot="description" class="card-description">{{ item.description }}</div>
                   </a-card-meta>
                   <div class="project-item">
-                    <a href="/#/">科学搬砖组</a>
-                    <span class="datetime">9小时前</span>
+                    <a href="/#/">姜启航</a>
+                    <span class="datetime">999年前</span>
                   </div>
                 </a-card>
               </a-card-grid>
@@ -79,17 +75,13 @@
             :body-style="{padding: 0}"
           >
             <div class="item-group">
-              <a>操作一</a>
-              <a>操作二</a>
-              <a>操作三</a>
-              <a>操作四</a>
-              <a>操作五</a>
-              <a>操作六</a>
-              <a-button size="small" type="primary" ghost icon="plus">添加</a-button>
+              <a :href="'/exception/403'">403</a>
+              <a :href="'/exception/404'">404</a>
+              <a :href="'/exception/500'">500</a>
             </div>
           </a-card>
           <a-card
-            title="XX 指数"
+            title="任务完成数"
             style="margin-bottom: 24px"
             :loading="radarLoading"
             :bordered="false"
@@ -97,7 +89,7 @@
           >
             <div style="min-height: 400px;">
               <!-- :scale="scale" :axis1Opts="axis1Opts" :axis2Opts="axis2Opts"  -->
-              <radar :data="radarData"/>
+              <Bar :data="radarData"/>
             </div>
           </a-card>
           <a-card :loading="loading" title="团队" :bordered="false">
@@ -124,7 +116,7 @@ import { mapGetters } from 'vuex'
 
 import { PageView } from '@/layouts'
 import HeadInfo from '@/components/tools/HeadInfo'
-import { Radar } from '@/components'
+import { Bar } from '@/components'
 
 import { getRoleList, getServiceList } from '@/api/manage'
 
@@ -135,7 +127,7 @@ export default {
   components: {
     PageView,
     HeadInfo,
-    Radar
+    Bar
   },
   data() {
     return {
@@ -148,6 +140,7 @@ export default {
       radarLoading: true,
       activities: [],
       teams: [],
+      shownum:0,
 
       // data
       axis1Opts: {
@@ -195,10 +188,10 @@ export default {
       return this.$store.getters.appSession
     }
   },
+  
   created() {
     this.user = this.appSession.user
     this.avatar = this.user.profilePictureId
-
     getRoleList().then(res => {
       console.log('workplace -> call getRoleList()', res)
     })
@@ -216,10 +209,13 @@ export default {
   methods: {
     ...mapGetters(['welcome']),
     getProjects() {
-      this.$http.get('/list/search/projects').then(res => {
-        this.projects = res.result && res.result.data
+        this.projects =[
+          {title:'啊啊啊啊',cover:'https://gw.alipayobjects.com/zos/rmsportal/dURIMkkrRFpPgTuzkwnB.png',description:'爱仕达大所大二群哇所'},
+          {title:'巴巴爸爸',cover:'https://gw.alipayobjects.com/zos/rmsportal/dURIMkkrRFpPgTuzkwnB.png',description:'奥术大师大所多'},
+          {title:'啛啛喳喳',cover:'https://gw.alipayobjects.com/zos/rmsportal/dURIMkkrRFpPgTuzkwnB.png',description:'Asdasd'},
+          {title:'顶顶顶顶',cover:'https://gw.alipayobjects.com/zos/rmsportal/dURIMkkrRFpPgTuzkwnB.png',description:'奥术大师大所'},
+          ]
         this.loading = false
-      })
     },
     getActivity() {
       this.$http.get('/workplace/activity').then(res => {
@@ -234,18 +230,25 @@ export default {
     initRadar() {
       this.radarLoading = true
 
-      this.$http.get('/workplace/radar').then(res => {
-        const dv = new DataSet.View().source(res.result)
-        dv.transform({
-          type: 'fold',
-          fields: ['个人', '团队', '部门'],
-          key: 'user',
-          value: 'score'
-        })
+      // this.$http.get('/workplace/radar').then(res => {
+        const dv = [
+            { x: '2019-01-01', y: 1393 },
+            { x: '2019-01-02', y: 3530 },
+            { x: '2019-01-03', y: 2923 },
+            { x: '2019-01-04', y: 1723 },
+            { x: '2019-01-05', y: 3792 },
+            { x: '2019-01-06', y: 4593 }
+          ]
+        // dv.transform({
+        //   type: 'fold',
+        //   fields: ['个人', '团队', '部门'],
+        //   key: 'user',
+        //   value: 'score'
+        // })
 
-        this.radarData = dv.rows
+        this.radarData = dv
         this.radarLoading = false
-      })
+      // })
     }
   }
 }
