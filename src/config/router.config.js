@@ -3,7 +3,6 @@ import { UserLayout, BasicLayout, RouteView, BlankLayout, PageView } from '@/lay
 import { bxAnaalyse } from '@/core/icons'
 
 export const asyncRouterMap = [
-
   {
     path: '/',
     name: 'index',
@@ -13,19 +12,19 @@ export const asyncRouterMap = [
     children: [
       // dashboard
       {
-        path: '/dashboard',
-        name: 'dashboard',
-        redirect: '/dashboard/workplace',
-        component: RouteView,
-        meta: { title: '仪表盘', keepAlive: true, icon: bxAnaalyse },
-        children: [
-          {
+        // path: '/dashboard',
+        // name: 'dashboard',
+        // redirect: '/dashboard/workplace',
+        // component: RouteView,
+        // meta: { title: '仪表盘', keepAlive: true, icon: bxAnaalyse },
+        // children: [
+        //   {
             path: '/dashboard/workplace',
             name: 'Workplace',
             component: () => import('@/views/dashboard/Workplace'),
             meta: { title: '工作台', keepAlive: true, permission: 'Pages.Administration' }
-          },
-        ]
+        //   },
+        // ]
       },
       
       // 工艺管理
@@ -219,12 +218,12 @@ export const asyncRouterMap = [
         name: 'account',
         meta: { title: '账号管理', icon: 'user', keepAlive: true, permission: 'Pages' },
         children: [
-          {
-            path: '/account/center',
-            name: 'center',
-            component: () => import('@/views/account/center/Index'),
-            meta: { title: '个人中心', keepAlive: true, permission: 'Pages' }
-          },
+          // {
+          //   path: '/account/center',
+          //   name: 'center',
+          //   component: () => import('@/views/account/center/Index'),
+          //   meta: { title: '个人中心', keepAlive: true, permission: 'Pages' }
+          // },
           {
             path: '/account/noticeIcon',
             name: 'noticeIcon',
@@ -246,29 +245,11 @@ export const asyncRouterMap = [
                 meta: { title: '基本设置', hidden: true, permission: 'Pages' }
               },
               {
-                path: '/account/settings/security',
-                name: 'SecuritySettings',
-                component: () => import('@/views/account/settings/Security'),
-                meta: { title: '安全设置', hidden: true, keepAlive: true, permission: 'Pages' }
-              },
-              {
                 path: '/account/settings/custom',
                 name: 'CustomSettings',
                 component: () => import('@/views/account/settings/Custom'),
                 meta: { title: '个性化设置', hidden: true, keepAlive: true, permission: 'Pages' }
               },
-              {
-                path: '/account/settings/binding',
-                name: 'BindingSettings',
-                component: () => import('@/views/account/settings/Binding'),
-                meta: { title: '账户绑定', hidden: true, keepAlive: true, permission: 'Pages' }
-              },
-              {
-                path: '/account/settings/notification',
-                name: 'NotificationSettings',
-                component: () => import('@/views/account/settings/Notification'),
-                meta: { title: '新消息通知', hidden: true, keepAlive: true, permission: 'Pages' }
-              }
             ]
           }
         ]

@@ -3,7 +3,7 @@
   <page-view :avatar="avatar ? avatar : '/avatar2.jpg'" :title="false">
     <div slot="headerContent">
       <div class="title">
-        {{ timeFix }}，{{ user.name+user.surname }}
+        {{ timeFix }}，{{ user.surname + user.name }}
         <span class="welcome-text">，{{ welcome() }}</span>
       </div>
       <div>用户看板</div>

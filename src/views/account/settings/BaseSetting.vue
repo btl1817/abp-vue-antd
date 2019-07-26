@@ -2,45 +2,18 @@
   <div class="account-settings-info-view">
     <a-row :gutter="16">
       <a-col :md="24" :lg="16">
-        <a-form layout="vertical">
-          <a-form-item label="昵称">
-            <a-input placeholder="给自己起个名字"/>
+        <a-form layout="vertical" @submit="update">
+          <a-form-item label="姓名：">{{ user.surname }} {{ user.name }}</a-form-item>
+          <a-form-item label="原密码：" :required="false">
+            <a-input placeholder="原密码" v-model="oldpwd" />
           </a-form-item>
-          <a-form-item label="Bio">
-            <a-textarea rows="4" placeholder="You are not alone."/>
+          <a-form-item label="新密码：" :required="false">
+            <a-input placeholder="新密码" v-model="newpwd" />
           </a-form-item>
-
-          <a-form-item label="电子邮件" :required="false">
-            <a-input placeholder="exp@admin.com"/>
-          </a-form-item>
-          <a-form-item label="加密方式" :required="false">
-            <a-select defaultValue="aes-256-cfb">
-              <a-select-option value="aes-256-cfb">aes-256-cfb</a-select-option>
-              <a-select-option value="aes-128-cfb">aes-128-cfb</a-select-option>
-              <a-select-option value="chacha20">chacha20</a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item label="连接密码" :required="false">
-            <a-input placeholder="h3gSbecd"/>
-          </a-form-item>
-          <a-form-item label="登录密码" :required="false">
-            <a-input placeholder="密码"/>
-          </a-form-item>
-
           <a-form-item>
-            <a-button type="primary">提交</a-button>
-            <a-button style="margin-left: 8px">保存</a-button>
+            <a-button type="primary" @click="update">提交</a-button>
           </a-form-item>
         </a-form>
-      </a-col>
-      <a-col :md="24" :lg="8" :style="{ minHeight: '180px' }">
-        <div class="ant-upload-preview" @click="$refs.modal.edit(2)">
-          <a-icon type="cloud-upload-o" class="upload-icon"/>
-          <div class="mask">
-            <a-icon type="plus"/>
-          </div>
-          <img :src="option.img">
-        </div>
       </a-col>
     </a-row>
 
@@ -50,6 +23,8 @@
 
 <script>
 import AvatarModal from './AvatarModal'
+import { message } from 'ant-design-vue'
+import { changePassword } from '@/api/precise/user'
 
 export default {
   components: {
@@ -59,6 +34,7 @@ export default {
     return {
       // cropper
       preview: {},
+      user: {},
       option: {
         img: '/avatar2.jpg',
         info: true,
@@ -73,10 +49,43 @@ export default {
         // 开启宽度和高度比例
         fixed: true,
         fixedNumber: [1, 1]
-      }
+      },
+      oldpwd: '',
+      newpwd: '',
+
+      form: this.$form.createForm(this)
     }
   },
-  methods: {}
+  computed: {
+    appSession() {
+      return this.$store.getters.appSession
+    }
+  },
+
+  created() {
+    this.user = this.appSession.user
+    // getRoleList().then(res => {
+    //   console.log('workplace -> call getRoleList()', res)
+    // })
+
+    // getServiceList().then(res => {
+    //   console.log('workplace -> call getServiceList()', res)
+    // })
+  },
+  methods: {
+    update(e) {
+      this.$message.info(this.oldpwd+'|'+this.newpwd)
+      changePassword({ currentPassword: this.oldpwd,newPassword:this.newpwd })
+        .then(response => {
+          this.$message.info('密码修改成功！')
+          // this.$refs.table.refresh(true)
+        })
+        .catch(err => {
+          this.$message.info('密码修改失败！')
+          // this.$message.error(err.message)
+        })
+    }
+  }
 }
 </script>
 

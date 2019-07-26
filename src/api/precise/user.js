@@ -71,3 +71,11 @@ export function unlockUser (parameter) {
     data: parameter
   })
 }
+
+export function changePassword (parameter) {
+  return axios({
+    url: AppConsts.remoteServiceBaseUrl + '/api/services/app/Profile/ChangePassword',
+    method: 'post',
+    data: parameter
+  })
+}
