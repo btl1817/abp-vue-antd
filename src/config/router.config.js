@@ -37,9 +37,9 @@ export const asyncRouterMap = [
         children: [
           {
             path: '/technology/technologyinfo',
-            name: 'technologyinfo',
-            component: () => import('@/views/exception/404'),
-            meta: { title: '工艺管理', icon: 'profile', permission: 'Pages' }
+            name: 'TechnologyInfo',
+            component: () => import('@/views/technology/TechnologyInfo'),
+            meta: { title: '工艺管理', keepAlive: true, icon: 'profile', permission: 'Pages' }
           },
         ]
       },
