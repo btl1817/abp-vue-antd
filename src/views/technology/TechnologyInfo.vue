@@ -39,7 +39,7 @@
     </div>
 
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="$refs.createModal.add()">新建</a-button>
+      <a-button type="primary" icon="plus" @click="$refs.CreateOrEdit.createOrEdit()">新建</a-button>
     </div>
 
     <s-table
@@ -76,16 +76,14 @@
         </template>
       </span>
     </s-table>
-    <create-form ref="createModal" @ok="handleOk" />
-    <step-by-step-modal ref="modal" @ok="handleOk"/>
+    <CreateOrEdit ref="CreateOrEdit" @ok="handleOk" />
   </a-card>
 </template>
 
 <script>
 import moment from 'moment'
 import { STable, Ellipsis } from '@/components'
-import StepByStepModal from './modules/StepByStepModal'
-import CreateForm from './modules/CreateForm'
+import CreateOrEdit from './modules/CreateOrEdit'
 import { getRoleList, getServiceList } from '@/api/manage'
 import { getTechnologyInfo } from '@/api/technology/info'
 
@@ -113,8 +111,7 @@ export default {
   components: {
     STable,
     Ellipsis,
-    CreateForm,
-    StepByStepModal
+    CreateOrEdit
   },
   data () {
     return {
@@ -166,7 +163,10 @@ export default {
         // console.log('loadData.parameter', parameter)
         return getTechnologyInfo(Object.assign(parameter, this.queryParam))
           .then(res => {
-            return res.result
+            if(res.result)
+              return res.result
+            else
+              return null
           })
       },
       selectedRowKeys: [],
@@ -223,7 +223,7 @@ export default {
 
     handleEdit (record) {
       console.log(record)
-      this.$refs.modal.edit(record)
+      this.$refs.CreateOrEdit.CreateOrEdit(record)
     },
     handleDetail (record) {
         this.$message.info(`${record.code} 明细`)
@@ -246,6 +246,7 @@ export default {
     },
     resetSearchForm () {
       this.queryParam = {
+        
         date: moment(new Date())
       }
     }

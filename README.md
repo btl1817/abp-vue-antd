@@ -15,7 +15,7 @@
 ```
     $ npm run serve
 ```
->* 启动调试，访问  <a href="http://localhost:8000" target="_blank">http://localhost:8000</a> 查看效果。
+>* 启动调试，访问  <a href="http://localhost:8080" target="_blank">http://localhost:8080</a> 查看效果。
 
 >* 构建和部署
 ```
@@ -32,3 +32,4 @@
 ![角色管理](https://github.com/zhang8043/abp-vue-antd/blob/master/public/preview/role.png)
 ![用户管理](https://github.com/zhang8043/abp-vue-antd/blob/master/public/preview/user.png)
 ![修改用户](https://github.com/zhang8043/abp-vue-antd/blob/master/public/preview/edituser.png)
+, {rules: [{ type: 'number', required: true, message: '请输入控制温度', transform(value) {if(value){return Number(value);}}}]}

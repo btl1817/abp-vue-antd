@@ -14,7 +14,7 @@ import { axios } from '@/utils/request'
  */
 export function login (parameter) {
   return axios({
-    url: 'http://hyd-yf01:21021/api/TokenAuth/Authenticate',
+    url: 'http://127.0.0.1:21021/api/TokenAuth/Authenticate',
     method: 'post',
     data: parameter
   })

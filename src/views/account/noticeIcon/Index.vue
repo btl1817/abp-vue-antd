@@ -9,11 +9,11 @@
           :pagination="pagination"
           @change="handleTableChange"
         >
-          <template slot="text" slot-scope="data">
+          <template slot="text">
             <a-avatar :size="25" style="background-color: white" slot="avatar" :src="data.icon"/>
-            {{data.text}}
+            {{ data.text }}
           </template>
-          <template slot="time" slot-scope="time">{{time}}</template>
+          <template slot="time" slot-scope="time">{{ time }}</template>
         </a-table>
       </a-tab-pane>
     </a-tabs>
