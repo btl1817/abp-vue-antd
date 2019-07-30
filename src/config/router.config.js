@@ -55,7 +55,7 @@ export const asyncRouterMap = [
           {
             path: '/plan/planmanage',
             name: 'planmanage',
-            component: () => import('@/views/exception/404'),
+            component: () => import('@/views/plan/PlanManager'),
             meta: { title: '生产计划', icon: 'profile', permission: 'Pages' }
           },
           {

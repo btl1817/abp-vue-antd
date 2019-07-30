@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    :title="userId? '修改工艺' : '添加工艺'"
+    :title="id? '修改工艺' : '添加工艺'"
     :width="900"
     :visible="visible"
     :destroyOnClose="true"
@@ -8,7 +8,11 @@
     @cancel="handleCancel"
   >
     <a-spin :spinning="confirmLoading">
-      <a-steps :current="currentStep" :style="{ marginBottom: '28px',cursor:'pointer' }" size="small">
+      <a-steps
+        :current="currentStep"
+        :style="{ marginBottom: '28px',cursor:'pointer' }"
+        size="small"
+      >
         <a-step title="信息" @click="showStep(0)" />
         <a-step title="步1" @click="showStep(1)" />
         <a-step title="步2" @click="showStep(2)" />
@@ -231,15 +235,7 @@ export default {
         xs: { span: 24 },
         sm: { span: 13 }
       },
-      userId: undefined,
-      profilePicture: null,
-      roles: [],
-      selectedRoles: [],
-      treeData: [],
-      selectedOus: [],
-      setRandomPassword: false,
-      sendActivationEmail: false,
-      confirmDirty: false,
+      id: undefined,
       visible: false,
       confirmLoading: false,
       currentStep: 0,
@@ -249,7 +245,7 @@ export default {
   },
   methods: {
     createOrEdit(id) {
-      // this.userId = id
+      this.id = id
       this.visible = true
       // this.confirmLoading = true
 
@@ -289,29 +285,13 @@ export default {
       } = this
       this.confirmLoading = true
       validateFields((errors, values) => {
-        console.log('errors:', errors, 'val:', values)
-        if (!errors) {
-          console.log('values:', values)
-          setTimeout(() => {
-            this.confirmLoading = false
-            this.$emit('ok', values)
-          }, 1500)
-        } else {
-          this.confirmLoading = false
-        }
-      })
-      return
-      validateFields((errors, values) => {
         if (!errors) {
           var formData = {
-            user: {
-              id: this.userId,
+            detail: {
+              id: this.id,
+              step: this.currentStep,
               ...values
-            },
-            assignedRoleNames: values.assignedRoleNames,
-            sendActivationEmail: this.sendActivationEmail,
-            setRandomPassword: this.setRandomPassword,
-            organizationUnits: this.selectedOus
+            }
           }
           createOrUpdateUser(formData)
             .then(response => {
@@ -322,7 +302,7 @@ export default {
             })
             .catch(err => {
               this.confirmLoading = false
-              this.$message.error(`${this.userId ? '修改' : '添加'}失败: ${err.message}`)
+              this.$message.error(`${this.id ? '修改' : '添加'}失败: ${err.message}`)
             })
         } else {
           this.confirmLoading = false
