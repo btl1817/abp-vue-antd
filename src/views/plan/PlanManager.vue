@@ -10,7 +10,28 @@
           </a-col>
           <a-col :md="8" :sm="24">
             <a-form-item label="工艺编号">
-              <a-input v-model="queryParam.TechnologyCode" placeholder="工艺编号" />
+              <a-auto-complete
+                v-model="queryParam.TechnologyCode"
+                class="certain-category-search"
+                dropdownClassName="certain-category-search-dropdown"
+                @select="onSelect"
+                @search="handleSearch"
+                placeholder="工艺编码"
+                optionLabelProp="value"
+              >
+                <template slot="dataSource">
+                  <a-select-option v-for="item in technologyList" :key="item.code">
+                    {{ item.rubberCode }}
+                    <a-row :gutter="24">
+                      <a-col :span="10">{{ item.code }}</a-col>
+                      <a-col :span="14">{{ item.name }}</a-col>
+                    </a-row>
+                  </a-select-option>
+                </template>
+                <a-input>
+                  <a-icon slot="suffix" type="search" class="certain-category-icon" />
+                </a-input>
+              </a-auto-complete>
             </a-form-item>
           </a-col>
           <template v-if="advanced">
@@ -20,13 +41,15 @@
                   <a-select-option value="0">新建</a-select-option>
                   <a-select-option value="1">执行</a-select-option>
                   <a-select-option value="2">完成</a-select-option>
-                  <a-select-option value="3">作废</a-select-option>
+                  <a-select-option value="3">检验完成</a-select-option>
+                  <a-select-option value="4">检验作废</a-select-option>
+                  <a-select-option value="5">作废</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
               <a-form-item label="任务日期">
-                <a-range-picker style="width: 100%" v-model="queryParam.PlanData" />
+                <a-range-picker style="width: 100%" v-model="queryParam.PlanDate" />
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
@@ -53,18 +76,22 @@
     </div>
 
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="$refs.CreateOrEdit.createOrEdit()">新建</a-button>
+      <a-button type="primary" icon="plus" @click="$refs.Create.create()">新建</a-button>
     </div>
 
     <s-table
       ref="table"
       size="default"
       rowKey="id"
+      showPagination="auto"
       :columns="columns"
       :data="loadData"
-      showPagination="auto"
     >
       <span slot="serial" slot-scope="text, record, index">{{ index + 1 }}</span>
+
+      <span slot="status" slot-scope="status">
+        <a-badge :status="status | statusTypeFilter" :text="status | statusFilter" />
+      </span>
 
       <span slot="action" slot-scope="text, record">
         <template>
@@ -89,33 +116,43 @@
         </template>
       </span>
     </s-table>
-    <CreateOrEdit ref="CreateOrEdit" @ok="handleOk" />
+    <Create ref="Create" @ok="handleOk" />
   </a-card>
 </template>
 
 <script>
 import moment from 'moment'
 import { STable, Ellipsis } from '@/components'
-import CreateOrEdit from './modules/CreateOrEdit'
+import Create from './modules/Create'
+import Edit from './modules/Edit'
 import { getRoleList, getServiceList } from '@/api/manage'
 import { getPlan } from '@/api/plan/manager'
+import { getTechnologyList } from '@/api/technology/info'
 
 const statusMap = {
   0: {
     status: 'default',
-    text: '关闭'
+    text: '新建'
   },
   1: {
     status: 'processing',
-    text: '运行中'
+    text: '执行'
   },
   2: {
     status: 'success',
-    text: '已上线'
+    text: '完成'
   },
   3: {
+    status: 'success',
+    text: '检验完成'
+  },
+  4: {
+    status: 'warning',
+    text: '检验作废'
+  },
+  5: {
     status: 'error',
-    text: '异常'
+    text: '作废'
   }
 }
 
@@ -123,7 +160,8 @@ export default {
   name: 'PlanManager',
   components: {
     STable,
-    CreateOrEdit
+    Create,
+    Edit
   },
   data() {
     return {
@@ -140,27 +178,48 @@ export default {
         },
         {
           title: '任务卡号',
-          dataIndex: 'CardCode',
+          dataIndex: 'cardCode',
           sorter: true
         },
         {
           title: '工艺编码',
-          dataIndex: 'Code',
+          dataIndex: 'technologyCode',
+          sorter: true
+        },
+        {
+          title: '产线',
+          dataIndex: 'productLineName',
           sorter: true
         },
         {
           title: '计划日期',
-          dataIndex: 'Date',
+          dataIndex: 'planDate',
           sorter: true
         },
         {
+          title: '班次',
+          dataIndex: 'shifts',
+          sorter: true
+        },
+        {
+          title: '状态',
+          dataIndex: 'status',
+          scopedSlots: { customRender: 'status' }
+        },
+        {
           title: '创建日期',
-          dataIndex: 'CreateTime',
+          dataIndex: 'createdTime',
           sorter: true
         },
         {
           title: '创建人',
-          dataIndex: 'CreateUser'
+          dataIndex: 'createdUser'
+        },
+        {
+          title: '操作',
+          dataIndex: 'action',
+          width: '150px',
+          scopedSlots: { customRender: 'action' }
         }
       ],
       // 加载数据方法 必须为 Promise 对象
@@ -168,7 +227,6 @@ export default {
         // console.log('loadData.parameter', parameter)
         return getPlan(Object.assign(parameter, this.queryParam)).then(res => {
           if (res.result) return res.result
-          else return null
         })
       },
       selectedRowKeys: [],
@@ -187,7 +245,9 @@ export default {
           onChange: this.onSelectChange
         }
       },
-      optionAlertShow: false
+      optionAlertShow: false,
+
+      technologyList: []
     }
   },
   filters: {
@@ -199,43 +259,21 @@ export default {
     }
   },
   created() {
-    // this.tableOption()
     // getRoleList({ t: new Date() })
   },
   methods: {
-    // tableOption() {
-    //   if (!this.optionAlertShow) {
-    //     this.options = {
-    //       alert: {
-    //         show: false,
-    //         clear: () => {
-    //           this.selectedRowKeys = []
-    //         }
-    //       },
-    //       rowSelection: {
-    //         selectedRowKeys: this.selectedRowKeys,
-    //         onChange: this.onSelectChange,
-    //         getCheckboxProps: record => ({
-    //           // props: {
-    //           //   disabled: record.no === 'No 2', // Column configuration not to be checked
-    //           //   name: record.no
-    //           // }
-    //         })
-    //       }
-    //     }
-    //     this.optionAlertShow = true
-    //   } else {
-    //     this.options = {
-    //       alert: false,
-    //       rowSelection: null
-    //     }
-    //     this.optionAlertShow = false
-    //   }
-    // },
-
+    handleSearch(value) {
+      getTechnologyList({ input: value }).then(res => {
+        if (res.result) this.technologyList = res.result
+        else return null
+      })
+    },
+    onSelect(value) {
+      var a = 1
+    },
     handleEdit(record) {
       console.log(record)
-      this.$refs.CreateOrEdit.createOrEdit(record)
+      this.$refs.Create.create(record)
     },
     handleDetail(record) {
       this.$message.info(`${record.code} 明细`)
@@ -264,3 +302,47 @@ export default {
   }
 }
 </script>
+<style>
+.certain-category-search-dropdown .ant-select-dropdown-menu-item-group-title {
+  color: #666;
+  font-weight: bold;
+}
+
+.certain-category-search-dropdown .ant-select-dropdown-menu-item-group {
+  border-bottom: 1px solid #f6f6f6;
+}
+
+.certain-category-search-dropdown .ant-select-dropdown-menu-item {
+  padding-left: 16px;
+}
+
+.certain-category-search-dropdown .ant-select-dropdown-menu-item.show-all {
+  text-align: center;
+  cursor: default;
+}
+
+.certain-category-search-dropdown .ant-select-dropdown-menu {
+  max-height: 300px;
+}
+</style>
+<style scoped>
+.certain-category-search-wrapper
+  >>> .certain-category-search.ant-select-auto-complete
+  .ant-input-affix-wrapper
+  .ant-input-suffix {
+  right: 12px;
+}
+.certain-category-search-wrapper >>> .certain-search-item-count {
+  position: absolute;
+  color: #999;
+  right: 16px;
+}
+.certain-category-search-wrapper >>> .certain-category-search.ant-select-focused .certain-category-icon {
+  color: #108ee9;
+}
+.certain-category-search-wrapper >>> .certain-category-icon {
+  color: #6e6e6e;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  font-size: 16px;
+}
+</style>

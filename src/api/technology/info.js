@@ -8,3 +8,11 @@ export function getTechnologyInfo (parameter) {
     params: parameter
   })
 }
+
+export function getTechnologyList (parameter) {
+  return axios({
+    url: AppConsts.remoteServiceBaseUrl + '/api/services/app/TechnologyService/getTechnologyList',
+    method: 'get',
+    params: parameter
+  })
+}
