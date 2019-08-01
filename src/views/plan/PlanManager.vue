@@ -37,13 +37,16 @@
           <template v-if="advanced">
             <a-col :md="8" :sm="24">
               <a-form-item label="任务状态">
-                <a-select v-model="queryParam.status" placeholder="-请选择-" default-value="0">
+                <a-select v-model="queryParam.status" placeholder="-请选择-">
+                  <a-select-option value>-请选择-</a-select-option>
                   <a-select-option value="0">新建</a-select-option>
-                  <a-select-option value="1">执行</a-select-option>
-                  <a-select-option value="2">完成</a-select-option>
-                  <a-select-option value="3">检验完成</a-select-option>
-                  <a-select-option value="4">检验作废</a-select-option>
-                  <a-select-option value="5">作废</a-select-option>
+                  <a-select-option value="1">出卡</a-select-option>
+                  <a-select-option value="2">配料</a-select-option>
+                  <a-select-option value="3">密炼</a-select-option>
+                  <a-select-option value="4">待检</a-select-option>
+                  <a-select-option value="5">完成</a-select-option>
+                  <a-select-option value="6">质检报废</a-select-option>
+                  <a-select-option value="7">生产报废</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
@@ -76,7 +79,12 @@
     </div>
 
     <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="$refs.Create.create()">新建</a-button>
+      <span>
+        <a-button type="primary" icon="plus" @click="$refs.Create.create()">新建</a-button>
+      </span>
+      <span style="{float: right;}">
+        <a-button @click="switchTable">切换样式</a-button>
+      </span>
     </div>
 
     <s-table
@@ -89,30 +97,27 @@
     >
       <span slot="serial" slot-scope="text, record, index">{{ index + 1 }}</span>
 
+      <span slot="shifts" slot-scope="shifts">{{ shifts | shiftsFilter }}</span>
+
       <span slot="status" slot-scope="status">
         <a-badge :status="status | statusTypeFilter" :text="status | statusFilter" />
       </span>
 
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record)">修改</a>
-          <a-dropdown>
-            <a class="ant-dropdown-link">
-              更多
-              <a-icon type="down" />
-            </a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <a href="javascript:;" @click="handleDetail(record)">详情</a>
-              </a-menu-item>
-              <a-menu-item>
-                <a href="javascript:;" @click="handleStop(record)">停用</a>
-              </a-menu-item>
-              <a-menu-item>
-                <a href="javascript:;" @click="handleDel(record)">删除</a>
-              </a-menu-item>
-            </a-menu>
-          </a-dropdown>
+          <a @click="handleDetail(record)">详情</a>
+          <a-divider type="vertical" />
+          <a-popconfirm
+            title="是否确认作废"
+            @confirm="handleDel(record)"
+            @cancel="cancel"
+            okText="作废"
+            cancelText="取消"
+            okType="danger"
+          >
+            <a-icon slot="icon" type="question-circle" style="color: orange" />
+            <a href="#">作废</a>
+          </a-popconfirm>
         </template>
       </span>
     </s-table>
@@ -136,25 +141,35 @@ const statusMap = {
   },
   1: {
     status: 'processing',
-    text: '执行'
+    text: '出卡'
   },
   2: {
-    status: 'success',
-    text: '完成'
+    status: 'processing',
+    text: '配料'
   },
   3: {
-    status: 'success',
-    text: '检验完成'
+    status: 'processing',
+    text: '密炼'
   },
   4: {
     status: 'warning',
-    text: '检验作废'
+    text: '待检'
   },
   5: {
+    status: 'success',
+    text: '完成'
+  },
+  6: {
     status: 'error',
-    text: '作废'
+    text: '质检报废'
+  },
+  7: {
+    status: 'error',
+    text: '生产报废'
   }
 }
+
+const ShiftsMap = { 0: '不限', 1: 'A班', 2: 'B班', 3: 'C班' }
 
 export default {
   name: 'PlanManager',
@@ -199,6 +214,7 @@ export default {
         {
           title: '班次',
           dataIndex: 'shifts',
+          scopedSlots: { customRender: 'shifts' },
           sorter: true
         },
         {
@@ -256,6 +272,9 @@ export default {
     },
     statusTypeFilter(type) {
       return statusMap[type].status
+    },
+    shiftsFilter(shifts) {
+      return ShiftsMap[shifts]
     }
   },
   created() {
@@ -267,6 +286,10 @@ export default {
         if (res.result) this.technologyList = res.result
         else return null
       })
+    },
+    switchTable() {
+      if (this.$refs.table.size === 'default') this.$refs.table.size = 'small'
+      else this.$refs.table.size = 'default'
     },
     onSelect(value) {
       var a = 1
