@@ -26,6 +26,14 @@ export function getPlanForEdit(parameter) {
   })
 }
 
+export function nullifyPlan(parameter) {
+  return axios({
+    url: AppConsts.remoteServiceBaseUrl + '/api/services/app/PlanService/NullifyPlan',
+    method: 'post',
+    data: {id:parameter.id}
+  })
+}
+
 export function createPlan(parameter) {
   return axios({
     url: AppConsts.remoteServiceBaseUrl + '/api/services/app/PlanService/CreatePlans',

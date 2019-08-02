@@ -45,8 +45,9 @@
                   <a-select-option value="3">密炼</a-select-option>
                   <a-select-option value="4">待检</a-select-option>
                   <a-select-option value="5">完成</a-select-option>
-                  <a-select-option value="6">质检报废</a-select-option>
-                  <a-select-option value="7">生产报废</a-select-option>
+                  <a-select-option value="40">质检报废</a-select-option>
+                  <a-select-option value="41">生产报废</a-select-option>
+                  <a-select-option value="50">计划作废</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
@@ -79,19 +80,15 @@
     </div>
 
     <div class="table-operator">
-      <span>
-        <a-button type="primary" icon="plus" @click="$refs.Create.create()">新建</a-button>
-      </span>
-      <span style="{float: right;}">
-        <a-button @click="switchTable">切换样式</a-button>
-      </span>
+      <a-button type="primary" icon="plus" @click="$refs.Create.create()">新建任务</a-button>
+      <a-button type="ghost" style="float: right;" @click="switchTable">{{ tabStyle }}</a-button>
     </div>
 
     <s-table
       ref="table"
-      size="default"
       rowKey="id"
       showPagination="auto"
+      :size="tabSize"
       :columns="columns"
       :data="loadData"
     >
@@ -110,10 +107,10 @@
           <a-popconfirm
             title="是否确认作废"
             @confirm="handleDel(record)"
-            @cancel="cancel"
             okText="作废"
             cancelText="取消"
             okType="danger"
+            :disabled="record.status>1"
           >
             <a-icon slot="icon" type="question-circle" style="color: orange" />
             <a href="#">作废</a>
@@ -131,7 +128,7 @@ import { STable, Ellipsis } from '@/components'
 import Create from './modules/Create'
 import Edit from './modules/Edit'
 import { getRoleList, getServiceList } from '@/api/manage'
-import { getPlan } from '@/api/plan/manager'
+import { getPlan, nullifyPlan } from '@/api/plan/manager'
 import { getTechnologyList } from '@/api/technology/info'
 
 const statusMap = {
@@ -159,13 +156,17 @@ const statusMap = {
     status: 'success',
     text: '完成'
   },
-  6: {
+  40: {
     status: 'error',
     text: '质检报废'
   },
-  7: {
+  41: {
     status: 'error',
     text: '生产报废'
+  },
+  50: {
+    status: 'error',
+    text: '计划作废'
   }
 }
 
@@ -185,6 +186,8 @@ export default {
       advanced: false,
       // 查询参数
       queryParam: {},
+      tabSize: 'default',
+      tabStyle: '紧凑',
       // 表头
       columns: [
         {
@@ -282,14 +285,23 @@ export default {
   },
   methods: {
     handleSearch(value) {
-      getTechnologyList({ input: value }).then(res => {
-        if (res.result) this.technologyList = res.result
-        else return null
-      })
+      getTechnologyList({ input: value })
+        .then(res => {
+          if (res.result) this.technologyList = res.result
+          else return null
+        })
+        .catch(err => {
+          ref.$message.error(err.message)
+        })
     },
     switchTable() {
-      if (this.$refs.table.size === 'default') this.$refs.table.size = 'small'
-      else this.$refs.table.size = 'default'
+      if (this.tabSize === 'default') {
+        this.tabSize = 'small'
+        this.tabStyle = '普通'
+      } else {
+        this.tabSize = 'default'
+        this.tabStyle = '紧凑'
+      }
     },
     onSelect(value) {
       var a = 1
@@ -305,7 +317,13 @@ export default {
       this.$message.info(`${record.code} 停用`)
     },
     handleDel(record) {
-      this.$message.info(`${record.code} 删除`)
+      nullifyPlan(record)
+        .then(res => {
+          this.$refs.table.refresh(true)
+        })
+        .catch(err => {
+          this.$message.error(err.message)
+        })
     },
     handleOk() {
       this.$refs.table.refresh()
