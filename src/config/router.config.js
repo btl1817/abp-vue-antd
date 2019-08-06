@@ -59,10 +59,10 @@ export const asyncRouterMap = [
             meta: { title: '生产计划', icon: 'profile', permission: 'Pages' }
           },
           {
-            path: '/plan/devicecheck',
-            name: 'devicecheck',
-            component: () => import('@/views/exception/404'),
-            meta: { title: '设备点检', icon: 'profile', permission: 'Pages' }
+            path: '/plan/CheckLog',
+            name: 'CheckLog',
+            component: () => import('@/views/check/CheckLog'),
+            meta: { title: '点检记录', icon: 'profile', permission: 'Pages' }
           },
         ]
       },
