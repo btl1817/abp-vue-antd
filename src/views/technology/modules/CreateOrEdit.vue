@@ -57,6 +57,15 @@
               placeholder="排胶重量"
             />
           </a-form-item>
+          <a-form-item label="适用产线" :labelCol="labelCol" :wrapperCol="wrapperCol">
+            <a-select
+              mode="multiple"
+              placeholder="多选适用产线"
+              v-decorator="['productLines', {rules: [{type: 'array', message: '请选择适用产线'}]}]"
+            >
+              <a-select-option v-for="item in productLines" :key="item.id">{{ item.code }}</a-select-option>
+            </a-select>
+          </a-form-item>
         </div>
         <div v-for="(item,i) in 10" :key="item" v-show="currentStep === item">
           <a-row :gutter="24">
@@ -203,6 +212,7 @@
 <script>
 import { Result } from '@/components'
 import pick from 'lodash.pick'
+import { getProductList } from '@/api/product/manager'
 
 const stepForms = [
   [
@@ -239,7 +249,7 @@ export default {
       visible: false,
       confirmLoading: false,
       currentStep: 0,
-
+      productLines: [],
       form: this.$form.createForm(this)
     }
   },
@@ -249,6 +259,9 @@ export default {
       this.visible = true
       // this.confirmLoading = true
 
+      getProductList({ input: '' }).then(res => {
+        if (res.result) this.productLines = res.result
+      })
       // this.confirmLoading = false
     },
     showStep(step) {
